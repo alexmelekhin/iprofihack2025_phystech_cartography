@@ -9,4 +9,5 @@ dependencies = [
     "faiss-cpu==1.7.4",
     "loguru==0.7.3",
     "numpy==1.26.4",
+    "typer>=0.16.0",
 ]
