@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import boto3
+import typer
 from botocore import UNSIGNED
 from botocore.config import Config
 
@@ -17,7 +18,8 @@ def download_s3_bucket(
         bucket_name: Name of the S3 bucket to download from.
         endpoint: S3 endpoint URL.
         prefix: Prefix to filter objects in the bucket.
-        local_dir: Local directory to save files. If None, uses ../data relative to current directory.
+        local_dir: Local directory to save files. If None, uses ../data
+            relative to current directory.
     """
     # Default local directory
     if local_dir is None:
@@ -42,7 +44,7 @@ def download_s3_bucket(
             key = obj["Key"]
 
             # Calculate local path
-            rel_path = key[len(prefix):] if prefix else key
+            rel_path = key
             local_path = local_dir / rel_path
 
         # Create parent directories
@@ -53,8 +55,34 @@ def download_s3_bucket(
             s3.download_file(bucket_name, key, str(local_path))
 
 
-if __name__ == "__main__":
-    bucket_name = "itlp-campus-data"
+def main(
+    set_name: str = typer.Argument(
+        ...,
+        help="Name of the set to download.",
+        metavar="SET"
+    )
+) -> None:
+    """Download files from S3 bucket to local directory.
+
+    Download either the 'train-val' or 'test' dataset from the S3 bucket.
+    Files will be saved to the data directory relative to the script location.
+    """
+    # Validate the set name
+    if set_name not in ["train-val", "test"]:
+        error_msg = (
+            f"Error: Invalid set name '{set_name}'. "
+            "Must be 'train-val' or 'test'."
+        )
+        typer.echo(error_msg, err=True)
+        raise typer.Exit(1)
+
+    bucket_name = "itlp-campus-data-large"
     local_dir = Path(__file__).parent.parent / "data"
 
-    download_s3_bucket(bucket_name=bucket_name, local_dir=local_dir)
+    download_s3_bucket(
+        bucket_name=bucket_name, prefix=set_name, local_dir=local_dir
+    )
+
+
+if __name__ == "__main__":
+    typer.run(main)
