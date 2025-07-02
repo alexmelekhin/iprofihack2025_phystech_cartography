@@ -76,7 +76,7 @@ def main(
         typer.echo(error_msg, err=True)
         raise typer.Exit(1)
 
-    bucket_name = "itlp-campus-data-large"
+    bucket_name = "itlp-campus-seq-data"
     local_dir = Path(__file__).parent.parent / "data"
 
     download_s3_bucket(
