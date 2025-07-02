@@ -65,6 +65,10 @@ python scripts/download_data.py test  # скачать тестовые данн
 python scripts/download_data.py train-val  # скачать тренировочные данные (нужны обучения/улучшения алгоритма)
 ```
 
+Либо вы можете скачать их вручную из S3-хранилища любым удобным способом:
+
+- https://storage.yandexcloud.net/itlp-campus-seq-data/
+
 ---
 
 ## 3. Часть B. Собственные данные
